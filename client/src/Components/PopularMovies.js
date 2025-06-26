@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
 function PopularMovies(props) {
     const [results, setResults] = useState([]);
     const [page, setPage] = useState(1);
+    const pathName = useLocation();
 
     const handleSubmit = (title) => {
         props.detailedView(title)
@@ -16,17 +17,18 @@ function PopularMovies(props) {
         setPage(page + 1)
     }
 
-    const fetchPopularMovies = async () => {
-        const url = `https://api.themoviedb.org/3/movie/popular?api_key=${props.apiKey}&page=${page}`;
-        const data = await fetch(url);
-        const parsedData = await data.json();
-        // console.log(parsedData);
-        setResults(parsedData.results);
-    }
     useEffect(() => {
         /*eslint-disable */
+        window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+        const fetchPopularMovies = async () => {
+            const url = `https://api.themoviedb.org/3/movie/popular?api_key=${props.apiKey}&page=${page}`;
+            const data = await fetch(url);
+            const parsedData = await data.json();
+            // console.log(parsedData);
+            setResults(parsedData.results);
+        }
         fetchPopularMovies();
-    }, [fetchPopularMovies])
+    }, [page, pathName])
 
     return (
         <motion.div initial={{opacity: 0}} animate={{opacity:1}} exit={{opacity:0}} transition={{duration:1.5}} style={{ marginTop: "30px" }}>

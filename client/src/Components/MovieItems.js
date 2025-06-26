@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import "./MovieItems.css";
-import { h1 } from "framer-motion/client";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 function MovieItems(props) {
     const [trailer, setTrailer] = useState(null);
@@ -12,6 +11,7 @@ function MovieItems(props) {
     const [total_results, setTotalResults] = useState(0);
     const [similar, setSimilar] = useState([]);
     const [movieId, setMovieId] = useState(null);
+    const pathName = useLocation();
 
     const fetchTrailers = async () => {
         if (props.newMovie && props.newMovie.id) {
@@ -40,7 +40,6 @@ function MovieItems(props) {
             const url = `https://api.themoviedb.org/3/movie/${props.newMovie.id}/reviews?api_key=${props.apiKey}`;
             const data = await fetch(url);
             const parsedData = await data.json();
-            // console.log(parsedData);
             setResults(parsedData.results);
             setTotalResults(parsedData.total_results);
         }
@@ -57,13 +56,14 @@ function MovieItems(props) {
     }
     useEffect(() => {
         /*eslint-diable*/
+        window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
         if (props.newMovie) {
             fetchTrailers();
             fetchCastAndCrew();
             fetchReviews();
             fetchSimilarMovies();
         }
-    }, [props.newMovie,movieId]);
+    }, [props.newMovie, movieId, pathName]);
 
     if (!props.newMovie) {
         return <h1>Loading...</h1>;
@@ -160,10 +160,10 @@ function MovieItems(props) {
                 </div>
                 <div>
                     <h1>Similar movies - </h1>
-                    <div style={{ display: 'grid', gridTemplateColumns: "repeat(4,1fr)",gap:"20px 35px"}}>
+                    <div style={{ display: 'grid', gridTemplateColumns: "repeat(4,1fr)", gap: "20px 35px" }}>
                         {similar ? (similar.length > 0 && similar.map(element => {
                             if (element.poster_path) {
-                                return (<div key={element.id} style={{margin: "0px 45px 0px 45px"}}>
+                                return (<div key={element.id} style={{ margin: "0px 45px 0px 45px" }}>
                                     <Link to={"/movie/" + element.title}>
                                         <img className="mt-2" src={"https://image.tmdb.org/t/p/w500/" + element.poster_path} width="150px" height="150px" alt={element.title} onClick={() => handleSubmit(element.id)} />
                                     </Link>
