@@ -10,6 +10,7 @@ import TopRated from './Components/TopRated';
 import Genres from './Components/Genres';
 import AllGenres from './Components/AllGenres';
 import UpcomingMovies from './Components/UpcomingMovies';
+import PersonDetails from './Components/PersonDetails';
 
 function App() {
   const apiKey = process.env.REACT_APP_API_KEY;
@@ -40,6 +41,7 @@ function App() {
         <Route exact path='/movies/now-playing' element={<NowPlaying detailedView={detailedView} apiKey={apiKey}/>}/>
         <Route exact path='/movies/top-rated' element={<TopRated detailedView={detailedView} apiKey={apiKey}/>}/>
         <Route exact path='/movies/upcoming' element={<UpcomingMovies detailedView={detailedView} apiKey={apiKey}/>}/>
+        <Route exact path="/person/:id" element={<PersonDetails detailedView={detailedView} apiKey={apiKey} />} />
       </Routes>
     </Router>
   );

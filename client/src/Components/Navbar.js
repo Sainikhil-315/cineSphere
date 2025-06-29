@@ -4,37 +4,119 @@ import './MovieItems.css';
 
 function Navbar({ onMovieUpdate }) {
     const [underline, setUnderline] = useState(false);
+    const [searchFocused, setSearchFocused] = useState(false);
+    const [searchValue, setSearchValue] = useState('');
+
     const handleUpdate = (event) => {
-        event.preventDefault();
-        onMovieUpdate(event.target.value);
+        const value = event.target.value;
+        setSearchValue(value);
+        onMovieUpdate(value);
     }
+
     const handleOnSubmit = (e) => {
-        e.preventDefault()
+        e.preventDefault();
+        // You can add search submission logic here if needed
+        if (searchValue.trim()) {
+            console.log('Searching for:', searchValue);
+            // Navigate to search results or trigger search
+        }
     }
+
     const handleClick = (link) => {
         setUnderline(link)
     }
+
+    const clearSearch = () => {
+        setSearchValue('');
+        onMovieUpdate('');
+    }
+
     return (
-        <nav className="sticky-top navbar navbar-expand-lg text-light" style={{backgroundColor: "#722f37"}}>
-            <div className="container-fluid" style={{gap:"220px"}}>
-                <Link className="navbar-brand text-light" to="/">CineSphere</Link>
-                <div className="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul className='text-light navbar-nav me-auto' style={{ listStyleType: "none", gap:"30px"}}>
-                        <Link className='text-light text-decoration-none' to='/movies/popular'><li className='nav-item' style={{textDecoration: underline === 'popular'?"underline":"none", transition: "textDecoration 1.3s ease"}} onClick={() => handleClick('popular')}>Trending</li></Link>
-                        <Link className='text-light text-decoration-none' to='/movies/now-playing'><li className='nav-item' style={{textDecoration: underline === 'now-playing'?"underline":"none", transition: "textDecoration 1.3s ease"}} onClick={() => handleClick('now-playing')}>Playing Now</li></Link>
-                        <Link className='text-light text-decoration-none' to='/movies/top-rated'><li className='nav-item' style={{textDecoration: underline === 'top-rated'?"underline":"none", transition: "textDecoration 1.3s ease"}} onClick={() => handleClick('top-rated')}>Top Rated</li></Link>
-                        <Link className='text-light text-decoration-none' to='/movies/upcoming'><li className='nav-item' style={{textDecoration: underline === 'upcoming'?"underline":"none", transition: "textDecoration 1.3s ease"}} onClick={() => handleClick('upcoming')}>Upcoming Movies</li></Link>
-                    </ul>
-                </div>
-                <Link to='/search'>
-                    <form onSubmit={handleOnSubmit} className="d-flex" role="search">
-                        <input className="form-control"
-                            type="search"
-                            placeholder="Search for a Movie"
-                            aria-label="Search"
-                            onChange={handleUpdate} />
-                    </form>
+        <nav className="navbar navbar-expand-lg navbar-cinema sticky-top">
+            <div className="container-fluid navbar-container">
+                <Link className="navbar-brand cinema-brand" to="/">
+                    <span className="brand-icon">🎬</span>
+                    CineSphere
                 </Link>
+
+                <button className="navbar-toggler cinema-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent">
+                    <span className="navbar-toggler-icon"></span>
+                </button>
+
+                <div className="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul className="navbar-nav cinema-nav me-auto">
+                        <li className="nav-item">
+                            <Link
+                                className={`nav-link cinema-link ${underline === 'popular' ? 'active' : ''}`}
+                                to='/movies/popular'
+                                onClick={() => handleClick('popular')}
+                            >
+                                <span className="nav-icon">🔥</span>
+                                Trending
+                            </Link>
+                        </li>
+                        <li className="nav-item">
+                            <Link
+                                className={`nav-link cinema-link ${underline === 'now-playing' ? 'active' : ''}`}
+                                to='/movies/now-playing'
+                                onClick={() => handleClick('now-playing')}
+                            >
+                                <span className="nav-icon">▶️</span>
+                                Playing Now
+                            </Link>
+                        </li>
+                        <li className="nav-item">
+                            <Link
+                                className={`nav-link cinema-link ${underline === 'top-rated' ? 'active' : ''}`}
+                                to='/movies/top-rated'
+                                onClick={() => handleClick('top-rated')}
+                            >
+                                <span className="nav-icon">⭐</span>
+                                Top Rated
+                            </Link>
+                        </li>
+                        <li className="nav-item">
+                            <Link
+                                className={`nav-link cinema-link ${underline === 'upcoming' ? 'active' : ''}`}
+                                to='/movies/upcoming'
+                                onClick={() => handleClick('upcoming')}
+                            >
+                                <span className="nav-icon">📅</span>
+                                Upcoming
+                            </Link>
+                        </li>
+                    </ul>
+
+                    {/* Enhanced Search Section */}
+                    <div className="search-wrapper">
+                        <Link to='/search' style={{ width: '100%', textDecoration: 'none' }}>
+                            <form onSubmit={handleOnSubmit} className="d-flex w-100" role="search">
+                                <div className={`search-container ${searchFocused ? 'focused' : ''} ${searchValue ? 'has-value' : ''}`}>
+                                    <input
+                                        className="cinema-search"
+                                        type="text"
+                                        placeholder="Search movies, actors, directors..."
+                                        aria-label="Search movies"
+                                        value={searchValue}
+                                        onChange={handleUpdate}
+                                        onFocus={() => setSearchFocused(true)}
+                                        onBlur={() => setSearchFocused(false)}
+                                    />
+                                    {searchValue && (
+                                        <button
+                                            type="button"
+                                            className="search-clear"
+                                            onClick={clearSearch}
+                                            aria-label="Clear search"
+                                        >
+                                            ✕
+                                        </button>
+                                    )}
+                                </div>
+                            </form>
+                        </Link>
+                    </div>
+                </div>
             </div>
         </nav>
     )
